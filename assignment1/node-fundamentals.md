@@ -22,12 +22,31 @@ Node is useful because it unleashes JavaScript further and does not limit it to 
 
 ## Explain the difference between CommonJS and ES Modules. Give a code example of each.
 
+Node.js imports and exports code using syntax different from Javascript and React. The function require() is called synchronously. It is also cached. ES modules use static asynchronous loading. ES modules use import/ export syntax. 
+
 **CommonJS (default in Node.js):**
+import example
+
 ```js
-// Answer here..
-```
+    const { register, logoff } = require("../controllers/userController");`
+
+export example
+
+```function add(a, b) {
+  return a + b;
+}
+
+function multiply(a, b) {
+  return a * b;
+}
+
+module.exports = { add, multiply };```
 
 **ES Modules (supported in modern Node.js):**
 ```js
-// Answer here..
+import { useState, useEffect } from "react";
+
+export default function Hello(){
+    console.log('hello world')
+}
 ``` 
