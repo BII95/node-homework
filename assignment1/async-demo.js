@@ -20,7 +20,7 @@ function callbackStyle(callback){
       return callback(error)
     
     }
-    console.log(data)
+    console.log(`Callback: ${data}`)
     callback(null)
   })
 }
@@ -59,7 +59,7 @@ function promiseStyle(){
 async function asyncStyle(){
   try{
     const data = await promiseStyle()
-    console.log(data);
+    console.log(`Async/await: ${data}`);
   }catch (error){
     console.error('Async/await error:',error.message)
   }
@@ -70,7 +70,7 @@ function main() {
   callbackStyle(() =>{
     promiseStyle()
       .then((data) =>{
-        console.log(data);
+        console.log(`Promise: ${data}`);
       })
     .catch ((error)=>{
       console.error('promise error:',error.message)
