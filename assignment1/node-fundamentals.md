@@ -2,7 +2,7 @@
 
 ## What is Node.js?
 
-Node.js is a runtime environment using Javascript. It allows you to write back-end code without having to leaarn a new programming language. In other words, Node.js gives you control over things beyond the front-end that are not limited to the browser window. Node.js also has access to thousands of npm packages to build server-side applications.
+Node.js is a runtime environment using Javascript. It allows you to write back-end code without having to learn a new programming language. In other words, Node.js gives you control over things beyond the front-end that are not limited to the browser window. Node.js also has access to thousands of npm packages to build server-side applications.
 
 ## How does Node.js differ from running JavaScript in the browser?
 Node.js runs on the server, from the terminal. Because JavaScript runs in the browser, it has acess to window and the DOM. This does not work in Node because it does not control the webpage. Node gives you acess to backend tools instead. 
