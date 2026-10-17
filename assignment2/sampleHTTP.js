@@ -27,7 +27,7 @@ const server = http.createServer((req, res) => {
       }),
     );
   }else if (req.method === "GET" && req.url ==="/timePage"){
-    res.writeHead(200,{"Content-Type": "text/html;charset=utf-8",});
+    res.writeHead(200,{"Content-Type": "text/html; charset=utf-8",});
     res.end(htmlString);
   }
   else if (req.method === "POST" && req.url === "/echo"){
@@ -37,6 +37,7 @@ const server = http.createServer((req, res) => {
     })
     req.on("end", () => {
         const parsedBody = JSON.parse(body);
+        res.writeHead(200,{ "Content-Type": "application/json"})
         res.end(JSON.stringify({weReceived: parsedBody}))
     })
 }
