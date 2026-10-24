@@ -16,7 +16,7 @@ app.use((req, res, next) => {
 
 app.use((req, res, next) => {
   console.log(
-    `[${new Date().toISOString()}]:${req.method}${req.path}(${req.requestId})`,
+    `[${new Date().toISOString()}]: ${req.method} ${req.path} (${req.requestId})`,
   );
   next();
 });
@@ -27,17 +27,17 @@ app.use("/adopt", dogsRouter);
 app.use("/error", dogsRouter);
 app.use("/images", dogsRouter);
 
-app.use((req, res,err,next) => {
+app.use((req, res) => {
   res.status(404).json({
     error: "Route not found",
-    requestId: `${req.method} ${req.path}`,
+    requestId: req.requestId,
   });
 });
 
-app.use((req, res,err,next) => {
+app.use((err,req, res,next) => {
   res.status(500).json({
     error: "Internal Server Error",
-    requestId: `${req.method} ${req.path}`,
+    requestId: req.requestId,
   });
 });
 
