@@ -3,15 +3,20 @@ const app = express();
 
 app.use(express.json());
 
-app.get("/", (req, res) => {
-  res.send("Hello, World!");
-});
+// app.get("/", (req, res) => {
+//   res.send("Hello, World!");
+// });
 
-app.post("/testpost", (req, res) => {
-  res.status(200).json({
-    message: "POST route works",
-  });
-});
+// app.post("/testpost", (req, res) => {
+//   res.status(200).json({
+//     message: "POST route works",
+//   });
+// });
+
+global.user_id= null
+global.users = []
+global.tasks =[]
+
 
 const port = process.env.PORT || 3000;
 
@@ -20,6 +25,13 @@ const server = app.listen(port, () => {
 });
 
 const timeRouter = require("./routes/timeRoutes");
+const userRouter = require("./routes/userRoutes")
+const notFound = require("./middleware/not-found")
+const errorHandler = require("./middleware/error-handler")
+
 app.use("/api",timeRouter);
+app.use("/api",userRouter);
+app.use(notFound);
+app.use(errorHandler);
 
 module.exports = { app, server };
