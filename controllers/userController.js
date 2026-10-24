@@ -8,9 +8,9 @@ function register(req, res) {
   global.users.push(userCredentials)
   global.user_id=userCredentials;
   
-  res.status.json(201).json({
-    name: res.body.name,
-    email: res.body.email
+  res.status(201).json({
+    name: userCredentials.name,
+    email: userCredentials.email
   })
 }
 function logon(req,res) {
