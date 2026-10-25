@@ -30,7 +30,7 @@ const notFound = require("./middleware/not-found")
 const errorHandler = require("./middleware/error-handler")
 
 app.use("/api",timeRouter);
-app.use("/api",userRouter);
+app.use("/api/users",userRouter);
 app.use(notFound);
 app.use(errorHandler);
 
