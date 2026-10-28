@@ -26,11 +26,13 @@ const server = app.listen(port, () => {
 
 const timeRouter = require("./routes/timeRoutes");
 const userRouter = require("./routes/userRoutes")
+const taskRoutes = require("./routes/taskRoutes")
 const notFound = require("./middleware/not-found")
 const errorHandler = require("./middleware/error-handler")
 
 app.use("/api",timeRouter);
 app.use("/api/users",userRouter);
+app.use("/api/tasks",taskRoutes)
 app.use(notFound);
 app.use(errorHandler);
 
