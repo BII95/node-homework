@@ -25,14 +25,15 @@ const server = app.listen(port, () => {
 });
 
 const timeRouter = require("./routes/timeRoutes");
-const userRouter = require("./routes/userRoutes")
-const taskRoutes = require("./routes/taskRoutes")
+const userRouter = require("./routes/userRoutes");
+const taskRouter = require("./routes/taskRoutes");
+const authMiddleware = require("./middleware/auth");
 const notFound = require("./middleware/not-found")
 const errorHandler = require("./middleware/error-handler")
 
 app.use("/api",timeRouter);
 app.use("/api/users",userRouter);
-app.use("/api/tasks",taskRoutes)
+app.use("/api/tasks",authMiddleware,taskRouter);
 app.use(notFound);
 app.use(errorHandler);
 
