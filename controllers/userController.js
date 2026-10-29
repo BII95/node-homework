@@ -1,9 +1,14 @@
+const {userSchema}= require("../validation/userSchema");
 
 function register(req, res) {
+  const {error,value}=userSchema.validate(req.body,{abortEarly:false})
+  if (error){
+    return res.status(400).json({message:error.details})
+  }
   const userCredentials = {
-    name: req.body.name,
-    email: req.body.email,
-    password: req.body.password,
+    name: value.name,
+    email: value.email,
+    password: value.password,
   };
   global.users.push(userCredentials)
   global.user_id=userCredentials;
