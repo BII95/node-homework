@@ -20,11 +20,30 @@ function create(req, res) {
     ...value,
   };
   global.tasks.push(newTask);
-  const sanitizedTask  = {...newTask};
+  const sanitizedTask = { ...newTask };
   delete sanitizedTask.userId;
 
   return res.status(201).json(sanitizedTask);
 }
 
+function index(req, res) {
+  const userTasks = global.tasks.filter(
+    (task) => task.userId === global.user_id.email)
 
-module.exports=create
+    if (userTasks.length===0){
+      return res.status(404).json({
+        message: "no tasks found",
+      })
+    }
+    const sanitizedTasks =userTasks.map((task) =>{
+      const sanitizedTask ={...task};
+      delete sanitizedTask.userId;
+      return sanitizedTask;
+    })
+    return res.status(200).json(
+      sanitizedTasks
+    )
+
+}
+
+module.exports = create;
