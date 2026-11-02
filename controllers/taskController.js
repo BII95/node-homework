@@ -46,4 +46,47 @@ function index(req, res) {
 
 }
 
-module.exports = create;
+function show(req,res){
+  const taskId = parseInt(req.params?.id);
+  if (isNaN(taskId)){
+    return res.status(400).json({message:'id not valid'})
+  }
+  const task=global.tasks.find(
+    (task)=>
+      task.id ===taskId&& task.userId===global.user_id.email
+  )
+  if (!task){
+    return res.status(404).json({message:`no matching task exists`})
+  }
+   const sanitizedTask = { ...task };
+   delete sanitizedTask.userId;
+
+  return res.status(200).json(sanitizedTask)
+
+}
+function update(req,res){
+  if (!req.body) req.body = {};
+  const { error, value } = patchTaskSchema.validate(req.body, { abortEarly: false });
+  if (error) {
+    return res.status(400).json({ message: error.details });
+  }
+  const idTask=parseInt(req.params?.id)
+   if (Number.isNaN(idTask)) {
+     return res.status(400).json({ message: "Invalid task ID" });
+   }
+
+   const task = global.tasks.find(
+     (task) => task.id === idTask && task.userId === global.user_id.email,
+   );
+   if (!task){
+    return res.status(404).json({message:`no matching task`})
+   }
+   Object.assign(task,value);
+    const sanitizedTask = { ...task};
+    delete sanitizedTask.userId;
+
+    return res.status(200).json(sanitizedTask);
+
+}
+
+module.exports = {create,index,show,update};
