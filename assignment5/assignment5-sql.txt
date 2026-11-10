@@ -1,9 +1,28 @@
 #TASK 1
 
-SELECT o.order_id, SUM(p.price * l.quantity) AS total_price 
-FROM orders o JOIN line_items l 
-ON o.order_id = l.order_id 
+SELECT o.order_id, 
+SUM(p.price * l.quantity) AS total_price 
+FROM orders o 
+JOIN line_items l ON o.order_id = l.order_id 
 JOIN products p ON l.product_id = p.product_id 
 GROUP BY o.order_id 
 ORDER BY o.order_id 
 LIMIT 5;
+
+#TASK2
+SELECT
+    c.customer_name,
+    AVG(t.total_price) AS average_order_price
+FROM customers c
+JOIN (
+    SELECT
+        o.customer_id,
+        SUM(p.price * l.quantity) AS total_price
+    FROM orders o
+    JOIN line_items l ON o.order_id = l.order_id
+    JOIN products p ON l.product_id = p.product_id
+    GROUP BY o.order_id, o.customer_id
+) AS t
+    ON c.customer_id = t.customer_id
+GROUP BY c.customer_id, c.customer_name
+ORDER BY c.customer_name;
