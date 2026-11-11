@@ -26,6 +26,7 @@ JOIN (
     ON c.customer_id = t.customer_id
 GROUP BY c.customer_id, c.customer_name
 ORDER BY c.customer_name;
+
 #TASK3
 SELECT customer_id FROM customers WHERE customer_name = 'Perez and Sons';
 SELECT employee_id FROM employees WHERE CONCAT(first_name, ' ', last_name) = 'Miranda Harris';
@@ -35,3 +36,6 @@ INSERT INTO orders (customer_id, employee_id, date) VALUES ((SELECT customer_id 
 INSERT INTO line_items (order_id, product_id, quantity) SELECT $1::integer, product_id, 10 FROM products ORDER BY price ASC LIMIT 5;
 COMMIT;
 SELECT * FROM line_items WHERE order_id = (SELECT MAX(order_id) FROM orders);
+
+#TASK4
+SELECT e.first_name, e.last_name, COUNT(o.order_id) AS order_count FROM employees e JOIN orders o ON o.employee_id = e.employee_id GROUP BY e.employee_id, e.first_name, e.last_name HAVING COUNT(o.order_id) > 5 ORDER BY e.last_name;
