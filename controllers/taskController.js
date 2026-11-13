@@ -10,7 +10,7 @@ async function create(req, res) {
 
   const result = await pool.query(
     `INSERT INTO tasks (title, is_completed, user_id)
-     VALUES ($1, $2, $3) RETURNING id, title, is_completed`,
+     VALUES ($1, $2, $3) RETURNING id, title, is_completed AS "isCompleted"`,
     [value.title, value.isCompleted ?? false, global.user_id],
   );
   return res.status(201).json(result.rows[0]);
