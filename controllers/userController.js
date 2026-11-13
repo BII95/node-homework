@@ -2,6 +2,7 @@ const { userSchema } = require("../validation/userSchema");
 const crypto = require("crypto");
 // const util = require("util");
 // const scrypt = util.promisify(crypto.scrypt);
+const pool = require("../db/pg-pool");
 
 function hashPassword(password) {
   const salt = crypto.randomBytes(16).toString("hex");
@@ -20,24 +21,35 @@ function comparePassword(inputPassword, storedHash) {
   );
 }
 
-function register(req, res) {
+async function register(req, res,next) {
   if (!req.body) req.body = {};
   const { error, value } = userSchema.validate(req.body, { abortEarly: false });
   if (error) {
     return res.status(400).json({ message: error.details });
   }
-  const hashedPassword=hashPassword(value.password);
-  const newUser = {
-    name: value.name,
-    email: value.email,
-    hashedPassword: hashedPassword,
-  };
-  global.users.push(newUser);
-  global.user_id = newUser;
+  value.hashed_password=hashPassword(value.password)
+  let result = null;
+
+  try {
+    result = await pool.query(
+      `INSERT INTO users (email, name, hashed_password)
+       VALUES ($1, $2, $3) RETURNING id, email, name`,
+      [value.email, value.name, value.hashed_password],
+    );
+  } catch (e) {
+    if (e.code === "23505") {
+      // unique constraint on email was violated
+      return res.status(400).json({ message: "email already registered" });
+    }
+    return next(e);
+  }
+
+  const user = result.rows[0];
+  global.user_id = user.id;
 
   res.status(201).json({
-    name: newUser.name,
-    email: newUser.email,
+    name: user.name,
+    email: user.email,
   });
 }
 function logon(req, res) {
