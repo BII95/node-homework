@@ -52,17 +52,25 @@ async function register(req, res,next) {
     email: user.email,
   });
 }
-function logon(req, res) {
-  const user = global.users.find(
-    (user) =>
-      user.email === req.body.email
-  );
-  if (!user || !comparePassword(req.body.password,user.hashedPassword)) {
-    return res.status(401).json({
-      message: "invalid credentials",
-    });
-  }
-  global.user_id = user;
+async function logon(req, res) {
+    if (!req.body) req.body = {};
+    const { email, password } = req.body;
+    if (!email || !password) {
+      return res.status(401).json({ message: "invalid credentials" });
+    }
+
+    const result = await pool.query("SELECT * FROM users WHERE email = $1", [
+      email,
+    ]);
+    if (result.rows.length === 0) {
+      return res.status(401).json({ message: "invalid credentials" });
+    }
+
+    const user = result.rows[0];
+    if (!comparePassword(password, user.hashed_password)) {
+      return res.status(401).json({ message: "invalid credentials" });
+    }
+  global.user_id = user.id;
 
   return res.status(200).json({
     name: user.name,
