@@ -15,8 +15,7 @@ app.get("/health", async (req, res) => {
 });
 
 global.user_id= null
-global.users = []
-global.tasks =[]
+
 
 
 const port = process.env.PORT || 3000;
