@@ -47,7 +47,7 @@ async function register(req, res,next) {
     });
   } catch (err) {
     if (err.name === "PrismaClientKnownRequestError" && err.code === "P2002") {
-      return res.status(409).json({ message: "Email already registered" });
+      return res.status(400).json({ message: "Email already registered" });
     }
     return next(err); // all other errors go to the error handler
   }
