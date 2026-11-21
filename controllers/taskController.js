@@ -16,6 +16,7 @@ const task = await prisma.task.create({
     title: true,
     isCompleted: true,
     id: true,
+    priority: "medium",
   },
 });
   
