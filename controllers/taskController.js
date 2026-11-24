@@ -1,5 +1,6 @@
 const { taskSchema, patchTaskSchema } = require("../validation/taskSchema");
 const prisma = require("../db/prisma")
+
 async function create(req, res) {
   if (!req.body) req.body = {};
   const { error, value } = taskSchema.validate(req.body, { abortEarly: false });
@@ -10,13 +11,14 @@ const task = await prisma.task.create({
   data: {
     title: value.title,
     isCompleted: value.isCompleted,
+    priority:value.priority,
     userId: global.user_id,
   },
   select: {
     title: true,
     isCompleted: true,
     id: true,
-    priority: "medium",
+    priority: true,
   },
 });
   
@@ -24,6 +26,10 @@ const task = await prisma.task.create({
 }
 
 async function index(req, res) {
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  const skip = (page-1)*limit;
+
   const tasks = await prisma.task.findMany({
     where: {
       userId: global.user_id, // only the tasks for this user!
@@ -40,15 +46,31 @@ async function index(req, res) {
           email:true
         }
       }
-      }
+      },
+      skip:skip,
+      take:limit,
+      orderBy:{createdAt:"desc"}
   });
-  
+  const totalTasks = await prisma.task.count({
+    where: {userId:global.user_id}
+  })
+  const pagination = {
+    page:page,
+    limit:limit,
+    total:totalTasks,
+    pages:Math.ceil(totalTasks/limit),
+    hasNext:page*limit<totalTasks,
+    hasPrev:page>1,
+  }
 
   if ( tasks.length === 0) {
     return res.status(404).json({ message: "no tasks found" });
   }
 
-  return res.status(200).json(tasks);
+   return res.status(200).json({
+     tasks,
+     pagination,
+   });
 }
 
 async function show(req, res) {
