@@ -28,49 +28,58 @@ const task = await prisma.task.create({
 async function index(req, res) {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
-  const skip = (page-1)*limit;
+  const skip = (page - 1) * limit;
+  const whereClause = { userId: global.user_id }; // only this user's tasks
+  if (req.query.find) {
+    whereClause.title = {
+      contains: req.query.find,
+      mode: "insensitive",
+    };
+  }
+
+
 
   const tasks = await prisma.task.findMany({
     where: {
       userId: global.user_id, // only the tasks for this user!
     },
     select: {
-      id: true, 
-      title:true,
-      isCompleted:true,
-      priority:true,
-      createdAt:true,
-      User:{
-        select:{
-          name:true,
-          email:true
-        }
-      }
+      id: true,
+      title: true,
+      isCompleted: true,
+      priority: true,
+      createdAt: true,
+      User: {
+        select: {
+          name: true,
+          email: true,
+        },
       },
-      skip:skip,
-      take:limit,
-      orderBy:{createdAt:"desc"}
+    },
+    skip: skip,
+    take: limit,
+    orderBy: { createdAt: "desc" },
   });
   const totalTasks = await prisma.task.count({
-    where: {userId:global.user_id}
-  })
+    where: { userId: global.user_id },
+  });
   const pagination = {
-    page:page,
-    limit:limit,
-    total:totalTasks,
-    pages:Math.ceil(totalTasks/limit),
-    hasNext:page*limit<totalTasks,
-    hasPrev:page>1,
-  }
+    page: page,
+    limit: limit,
+    total: totalTasks,
+    pages: Math.ceil(totalTasks / limit),
+    hasNext: page * limit < totalTasks,
+    hasPrev: page > 1,
+  };
 
-  if ( tasks.length === 0) {
+  if (tasks.length === 0) {
     return res.status(404).json({ message: "no tasks found" });
   }
 
-   return res.status(200).json({
-     tasks,
-     pagination,
-   });
+  return res.status(200).json({
+    tasks,
+    pagination,
+  });
 }
 
 async function show(req, res) {
